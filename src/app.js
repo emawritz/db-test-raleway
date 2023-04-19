@@ -1,23 +1,17 @@
 import express from "express";
-import { pool } from './db.js';
-import { PORT } from './config.js'
+import cors from "cors";
+import { PORT } from './config.js';
+import employeesRoutes from './routes/employees.routes.js';
+import indexRoutes from './routes/index.routes.js'
 
 const app = express();
 
-app.get('/', async (req, res) => {
-    const [rows] = await pool.query('SELECT * FROM users')
-    res.json(rows)
-})
+app.use(express.json())
 
-app.get('/ping', (req, res) => {
-    pool.query()
-    res.send('Welcome to Server')
-})
+app.use(cors())
 
-app.get('/create', async (req, res) => {
-    const result = await pool.query('INSERT INTO users(name) VALUES ("John")')
-    res.json(result)
-})
+app.use(indexRoutes)
+app.use('/api',employeesRoutes)
 
 app.listen(PORT)
 console.log('server on port', PORT)
